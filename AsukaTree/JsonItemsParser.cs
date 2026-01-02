@@ -1,0 +1,142 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.Json;
+
+namespace AsukaTree
+{
+    public static class JsonItemsParser
+    {
+        public static JsonTreeNode[] ParseItemsOnly(string json)
+        {
+            using var doc = JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("items", out var itemsEl) ||
+                itemsEl.ValueKind != JsonValueKind.Array)
+            {
+                throw new FormatException("JSONに items 配列が見つからない、または items が配列ではありません。");
+            }
+
+            var list = new List<JsonTreeNode>();
+            foreach (var item in itemsEl.EnumerateArray())
+            {
+                // items配列の要素が最上段（itemsノードは表示しない）
+                list.Add(BuildItemNode(item, allowChildren: true));
+            }
+            return list.ToArray();
+        }
+
+        private static JsonTreeNode BuildItemNode(JsonElement item, bool allowChildren)
+        {
+            int type = TryGetInt(item, "type") ?? -1;
+            string name = TryGetString(item, "name") ?? "(no-name)";
+            int? num0 = TryGetNum0(item);
+            string? seals = TryGetSealConcat(item);
+
+            string text = BuildDisplayText(name, type, num0, seals);
+
+            var node = new JsonTreeNode
+            {
+                Text = text,
+                IconKey = $"type:{type}"
+            };
+
+            // type=10（壺）だけ、pot配列を子として1段表示
+            if (allowChildren && type == 10)
+            {
+                if (item.TryGetProperty("pot", out var potEl) && potEl.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var inner in potEl.EnumerateArray())
+                    {
+                        node.Children.Add(BuildItemNode(inner, allowChildren: false)); // 子は展開しない
+                    }
+                }
+            }
+
+            return node;
+        }
+
+        private static string BuildDisplayText(string name, int type, int? num0, string? seals)
+        {
+            // 基本: nameだけ
+            if (type != 0 && type != 1 && type != 10)
+                return name;
+
+            // type=0 or 1:
+            // name + num[0](正なら+付) + [seal(区切り無し連結)]
+            if (type == 0 || type == 1)
+            {
+                var sb = new StringBuilder();
+                sb.Append(name);
+
+                if (num0.HasValue)
+                {
+                    sb.Append(' ');
+                    sb.Append(num0.Value > 0 ? $"+{num0.Value}" : num0.Value.ToString());
+                }
+
+                if (!string.IsNullOrEmpty(seals))
+                {
+                    sb.Append(' ');
+                    sb.Append('[');
+                    sb.Append(seals);
+                    sb.Append(']');
+                }
+
+                return sb.ToString();
+            }
+
+            // type=10（壺）: name + 容量(num[0])
+            if (type == 10)
+            {
+                if (num0.HasValue) return $"{name} {num0.Value}";
+                return name;
+            }
+
+            return name;
+        }
+
+        private static int? TryGetNum0(JsonElement item)
+        {
+            if (!item.TryGetProperty("num", out var numEl) || numEl.ValueKind != JsonValueKind.Array)
+                return null;
+
+            using var e = numEl.EnumerateArray();
+            if (!e.MoveNext()) return null;
+
+            var first = e.Current;
+            if (first.ValueKind == JsonValueKind.Number && first.TryGetInt32(out var n)) return n;
+
+            return null;
+        }
+
+        private static string? TryGetSealConcat(JsonElement item)
+        {
+            if (!item.TryGetProperty("seal", out var sealEl) || sealEl.ValueKind != JsonValueKind.Array)
+                return null;
+
+            var sb = new StringBuilder();
+            foreach (var s in sealEl.EnumerateArray())
+            {
+                sb.Append(s.ToString()); // 区切り無し連結
+            }
+            return sb.Length == 0 ? null : sb.ToString();
+        }
+
+        private static string? TryGetString(JsonElement obj, string propName)
+        {
+            if (obj.ValueKind != JsonValueKind.Object) return null;
+            if (!obj.TryGetProperty(propName, out var p)) return null;
+            if (p.ValueKind == JsonValueKind.String) return p.GetString();
+            return p.ToString();
+        }
+
+        private static int? TryGetInt(JsonElement obj, string propName)
+        {
+            if (obj.ValueKind != JsonValueKind.Object) return null;
+            if (!obj.TryGetProperty(propName, out var p)) return null;
+            if (p.ValueKind == JsonValueKind.Number && p.TryGetInt32(out var n)) return n;
+            return null;
+        }
+    }
+}

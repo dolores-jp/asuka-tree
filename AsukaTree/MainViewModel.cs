@@ -142,10 +142,9 @@ namespace AsukaTree
             try
             {
                 var uri = BuildUri();
-                Status = $"GET {uri}";
-                RaiseStatusChanged?.Invoke();
 
                 var json = await _http.GetStringAsync(uri);
+
                 var nodes = JsonItemsParser.ParseItemsOnly(json);
 
                 Roots.Clear();
@@ -164,6 +163,7 @@ namespace AsukaTree
                 Interlocked.Exchange(ref _refreshing, 0);
             }
         }
+
 
         // ===== INotifyPropertyChanged =====
         public event PropertyChangedEventHandler? PropertyChanged;

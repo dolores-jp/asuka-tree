@@ -21,7 +21,7 @@ namespace AsukaTree
         private readonly DispatcherTimer _timer;
         private int _refreshing = 0;
 
-        public string PortText { get; set; } = "8080";
+        public string PortText { get; set; } = "33333";
         public ObservableCollection<JsonTreeNode> Roots { get; } = new();
 
         public bool IsPolling { get; private set; } = false;

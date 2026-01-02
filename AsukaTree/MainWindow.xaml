@@ -69,7 +69,7 @@
             VerticalAlignment="Center"
             Margin="0,0,8,0"/>
 
-                <TextBlock VerticalAlignment="Center"
+               <TextBlock VerticalAlignment="Center"
                Text="{Binding BackgroundOpacity, StringFormat={}{0:0.00}}"
                Opacity="0.7"/>
             </WrapPanel>
@@ -96,9 +96,13 @@
                         <StackPanel Margin="0,0,10,2">
                             <StackPanel Orientation="Horizontal" Margin="0,0">
                                 <Image Width="16" Height="16"
-                               Source="{Binding IconKey, Converter={StaticResource TypeToIconConverter}}"
-                               Margin="0,0,6,0"/>
-                                <TextBlock Text="{Binding Text}" />
+                                 Source="{Binding IconKey, Converter={StaticResource TypeToIconConverter}}"
+                                 Margin="0,0,6,0"/>
+                                 <local:OutlinedText Text="{Binding Text}"
+                                                     FontSize="15"
+                                                     Stroke="White"
+                                                     StrokeThickness="2"
+                                                     Foreground="Black"/>
                             </StackPanel>
 
                             <!-- 子（壺の中身）: 常に縦並び -->
@@ -114,7 +118,11 @@
                                             <Image Width="16" Height="16"
                                            Source="{Binding IconKey, Converter={StaticResource TypeToIconConverter}}"
                                            Margin="0,0,6,0"/>
-                                            <TextBlock Text="{Binding Text}" />
+                                            <local:OutlinedText Text="{Binding Text}"
+                                                FontSize="15"
+                                                Stroke="White"
+                                                StrokeThickness="2"
+                                                Foreground="Black"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

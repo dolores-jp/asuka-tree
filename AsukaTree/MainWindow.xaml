@@ -24,25 +24,68 @@
     </Window.Resources>
 
     <DockPanel Margin="8">
+        <!-- 上部コントロール -->
         <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="140"/>
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-            <TextBlock Text="Port:" VerticalAlignment="Center" Margin="0,0,6,0"/>
-            <TextBox x:Name="PortBox" Grid.Column="1" VerticalAlignment="Center" />
+            <!-- 1行目：ポート＋開始停止 -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="140"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="2"/>
+                <TextBlock Text="Port:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox x:Name="PortBox" Grid.Column="1" VerticalAlignment="Center" />
 
-            <Button x:Name="ToggleButton" Grid.Column="3" Content="開始" Click="OnToggleClick" />
+                <TextBlock Grid.Column="2"/>
+
+                <Button x:Name="ToggleButton" Grid.Column="3" Content="開始" Click="OnToggleClick" />
+            </Grid>
+
+            <!-- 2行目：背景画像＋透過度 -->
+            <Grid Grid.Row="1" Margin="0,8,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="背景:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <Button Grid.Column="1" Content="画像を選択" Click="OnChooseBackgroundClick" Margin="0,0,6,0"/>
+                <Button Grid.Column="2" Content="クリア" Click="OnClearBackgroundClick" Margin="0,0,12,0"/>
+
+                <TextBlock Grid.Column="3" Text="透過度" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <Slider Grid.Column="4"
+                        Width="160"
+                        Minimum="0" Maximum="1"
+                        Value="{Binding BackgroundOpacity, Mode=TwoWay}"
+                        SmallChange="0.05" LargeChange="0.1"
+                        VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="5"
+                           VerticalAlignment="Center"
+                           Text="{Binding BackgroundOpacity, StringFormat={}{0:0.00}}"
+                           Margin="8,0,0,0"
+                           Opacity="0.7"/>
+            </Grid>
         </Grid>
 
+        <!-- ステータス -->
         <TextBlock x:Name="StatusText" DockPanel.Dock="Top" Margin="0,0,0,8"
                    TextTrimming="CharacterEllipsis"/>
 
-        <TreeView ItemsSource="{Binding Roots}" />
+        <!-- アイテム表示欄（背景ブラシをバインド） -->
+        <Border BorderThickness="1" BorderBrush="#33000000" CornerRadius="6" Padding="4">
+            <TreeView ItemsSource="{Binding Roots}"
+                      Background="{Binding TreeBackgroundBrush}"/>
+        </Border>
     </DockPanel>
 </Window>

@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace AsukaTree
 {
-    public sealed class MainViewModel
+    public sealed class MainViewModel : INotifyPropertyChanged
     {
         private const string Host = "localhost";
         private const string Path = "/api/info";
@@ -29,10 +32,80 @@ namespace AsukaTree
         public string Status { get; private set; } = "Ready";
         public event Action? RaiseStatusChanged;
 
+        // ===== 背景関連 =====
+        private string? _backgroundImagePath;
+        public string? BackgroundImagePath
+        {
+            get => _backgroundImagePath;
+            private set { _backgroundImagePath = value; OnPropertyChanged(nameof(BackgroundImagePath)); }
+        }
+
+        private double _backgroundOpacity = 0.35;
+        public double BackgroundOpacity
+        {
+            get => _backgroundOpacity;
+            set
+            {
+                _backgroundOpacity = Math.Clamp(value, 0.0, 1.0);
+                OnPropertyChanged(nameof(BackgroundOpacity));
+                UpdateBackgroundBrush();
+            }
+        }
+
+        private Brush? _treeBackgroundBrush;
+        public Brush? TreeBackgroundBrush
+        {
+            get => _treeBackgroundBrush;
+            private set { _treeBackgroundBrush = value; OnPropertyChanged(nameof(TreeBackgroundBrush)); }
+        }
+
         public MainViewModel()
         {
             _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
             _timer.Tick += async (_, __) => await RefreshAsync();
+
+            // デフォルトは背景なし（必要ならここで初期化）
+            UpdateBackgroundBrush();
+        }
+
+        public void SetBackgroundImage(string filePath)
+        {
+            BackgroundImagePath = filePath;
+            UpdateBackgroundBrush();
+        }
+
+        public void ClearBackgroundImage()
+        {
+            BackgroundImagePath = null;
+            UpdateBackgroundBrush();
+        }
+
+        private void UpdateBackgroundBrush()
+        {
+            if (string.IsNullOrWhiteSpace(BackgroundImagePath))
+            {
+                TreeBackgroundBrush = null; // 既定背景
+                return;
+            }
+
+            // ローカルファイルを読み込む（ロック回避のため CacheOption=OnLoad）
+            var bmp = new BitmapImage();
+            bmp.BeginInit();
+            bmp.UriSource = new Uri(BackgroundImagePath, UriKind.Absolute);
+            bmp.CacheOption = BitmapCacheOption.OnLoad;
+            bmp.EndInit();
+            bmp.Freeze();
+
+            var brush = new ImageBrush(bmp)
+            {
+                Opacity = BackgroundOpacity,
+                Stretch = Stretch.UniformToFill,   // 好みで Uniform / None など
+                AlignmentX = AlignmentX.Center,
+                AlignmentY = AlignmentY.Center
+            };
+            brush.Freeze();
+
+            TreeBackgroundBrush = brush;
         }
 
         private Uri BuildUri()
@@ -50,7 +123,6 @@ namespace AsukaTree
                 IsPolling = true;
                 RaiseStatusChanged?.Invoke();
 
-                // 開始時に1回即時更新してから、3秒ポーリングへ
                 await RefreshAsync();
                 _timer.Start();
             }
@@ -74,8 +146,6 @@ namespace AsukaTree
                 RaiseStatusChanged?.Invoke();
 
                 var json = await _http.GetStringAsync(uri);
-
-                // items配列だけを表示（type 0/1/10 の表示ルール込み）
                 var nodes = JsonItemsParser.ParseItemsOnly(json);
 
                 Roots.Clear();
@@ -94,5 +164,9 @@ namespace AsukaTree
                 Interlocked.Exchange(ref _refreshing, 0);
             }
         }
+
+        // ===== INotifyPropertyChanged =====
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }

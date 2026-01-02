@@ -1,7 +1,7 @@
 # AsukaTree
 
 <p align="center">
-  <img src="AsukaTree/icons/AsukaTree_256.png" alt="AsukaTree icon" width="128">
+  <img src="AsukaTree/icons/AsukaTree_256.png" alt="AsukaTree icon" width="256">
 </p>
 
 AsukaTree は、[AsukaTools](https://web.archive.org/web/20241015162142/http://www.lapcie.com/index.php?page=AsukaTools) の HTTP 機能を利用して、所持アイテムのデータ取得した後、見やすく整形してウィンドウに出力する windows のデスクトップアプリです。

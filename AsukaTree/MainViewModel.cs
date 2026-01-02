@@ -168,5 +168,20 @@ namespace AsukaTree
         // ===== INotifyPropertyChanged =====
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        private double _itemFontSize = 15.0;
+
+        public double ItemFontSize
+        {
+            get => _itemFontSize;
+            set
+            {
+                // 好きな範囲に調整してOK
+                var v = Math.Clamp(value, 10.0, 24.0);
+                if (Math.Abs(_itemFontSize - v) < 0.001) return;
+                _itemFontSize = v;
+                OnPropertyChanged(nameof(ItemFontSize));
+            }
+        }
     }
 }

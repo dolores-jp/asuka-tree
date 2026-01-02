@@ -58,12 +58,7 @@ namespace AsukaTree
 
         private static string BuildDisplayText(string name, int type, int? num0, string? seals)
         {
-            // 基本: nameだけ
-            if (type != 0 && type != 1 && type != 10)
-                return name;
-
-            // type=0 or 1:
-            // name + num[0](正なら+付) + [seal(区切り無し連結)]
+            // 剣盾
             if (type == 0 || type == 1)
             {
                 var sb = new StringBuilder();
@@ -71,7 +66,6 @@ namespace AsukaTree
 
                 if (num0.HasValue)
                 {
-                    sb.Append(' ');
                     sb.Append(num0.Value > 0 ? $"+{num0.Value}" : num0.Value.ToString());
                 }
 
@@ -86,10 +80,38 @@ namespace AsukaTree
                 return sb.ToString();
             }
 
-            // type=10（壺）: name + 容量(num[0])
+            // 矢
+            if (type == 3)
+            {
+                if (num0.HasValue) return $"{name} [{num0.Value}]";
+                return name;
+            }
+
+            // 杖
+            if (type == 9)
+            {
+                if (num0.HasValue) return $"{name} [{num0.Value}]";
+                return name;
+            }
+
+            // 壺
             if (type == 10)
             {
-                if (num0.HasValue) return $"{name} {num0.Value}";
+                if (num0.HasValue) return $"{name} [{num0.Value}]";
+                return name;
+            }
+
+            // エレキ箱
+            //if (type == 11)
+            //{
+            //    if (num0.HasValue) return $"{name} [{num0.Value}]";
+            //    return name;
+            //}
+
+            // ギタン
+            if (type == 12)
+            {
+                if (num0.HasValue) return $"{num0.Value}{name}";
                 return name;
             }
 

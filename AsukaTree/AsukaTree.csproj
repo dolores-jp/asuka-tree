@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+	<ApplicationIcon>icons/AsukaTree.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,6 +39,10 @@
     <Resource Include="Assets\7.png" />
     <Resource Include="Assets\9.png" />
     <Resource Include="Assets\999.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="icons\" />
   </ItemGroup>
 
 </Project>

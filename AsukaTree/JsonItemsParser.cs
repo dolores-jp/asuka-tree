@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace AsukaTree
 {
@@ -66,7 +67,8 @@ namespace AsukaTree
 
                 if (num0.HasValue)
                 {
-                    sb.Append(num0.Value > 0 ? $"+{num0.Value}" : num0.Value.ToString());
+                    if (num0.Value > 0) sb.Append($"+{num0.Value}");
+                    else if (num0.Value < 0) sb.Append(num0.Value.ToString());
                 }
 
                 if (!string.IsNullOrEmpty(seals))
@@ -87,10 +89,35 @@ namespace AsukaTree
                 return name;
             }
 
+            // 石
+            if (type == 4)
+            {
+                if (num0.HasValue) return $"{name} [{num0.Value}]";
+                return name;
+            }
+
+            // 巻物
+            if (type == 7)
+            {
+                // 白紙の巻物(○○の巻物) → 白紙:○○
+                var m = Regex.Match(
+                    name,
+                    @"^白紙の巻物\((.+?)の巻物\)$"
+                );
+
+                if (m.Success)
+                {
+                    name = $"白紙:{m.Groups[1].Value}";
+                }
+
+                return name;
+            }
+
             // 杖
             if (type == 9)
             {
-                if (num0.HasValue) return $"{name} [{num0.Value}]";
+                //未使用識別だと-65536
+                if (num0.HasValue) return (num0.Value < -100 ? $"{name}" : $"{name} [{num0.Value}]");
                 return name;
             }
 

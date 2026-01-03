@@ -16,6 +16,7 @@ namespace AsukaTree
             ["type:1"] = "Assets/1.png",
             ["type:2"] = "Assets/2.png",
             ["type:3"] = "Assets/3.png",
+            ["type:4"] = "Assets/4.png",
             ["type:5"] = "Assets/5.png",
             ["type:6"] = "Assets/6.png",
             ["type:7"] = "Assets/7.png",

@@ -18,6 +18,7 @@
     <None Remove="Assets\14.png" />
     <None Remove="Assets\2.png" />
     <None Remove="Assets\3.png" />
+    <None Remove="Assets\4.png" />
     <None Remove="Assets\5.png" />
     <None Remove="Assets\6.png" />
     <None Remove="Assets\7.png" />
@@ -34,6 +35,7 @@
     <Resource Include="Assets\14.png" />
     <Resource Include="Assets\2.png" />
     <Resource Include="Assets\3.png" />
+    <Resource Include="Assets\4.png" />
     <Resource Include="Assets\5.png" />
     <Resource Include="Assets\6.png" />
     <Resource Include="Assets\7.png" />

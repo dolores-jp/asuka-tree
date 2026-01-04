@@ -29,13 +29,14 @@ namespace AsukaTree
 
         private static JsonTreeNode BuildItemNode(JsonElement item, bool allowChildren)
         {
+            bool isIdentify = TryGetBool(item, "isIdentify") ?? false;
             int type = TryGetInt(item, "type") ?? -1;
             string name = TryGetString(item, "name") ?? "(no-name)";
             int? num0 = TryGetNum0(item);
             string? seals = TryGetSealConcat(item);
             int potCount = (type == 10) ? TryGetPotCount(item) : 0;
 
-            string text = BuildDisplayText(name, type, num0, seals, potCount);
+            string text = BuildDisplayText(name, type, num0, seals, potCount, isIdentify);
 
             var node = new JsonTreeNode
             {
@@ -58,7 +59,13 @@ namespace AsukaTree
             return node;
         }
 
-        private static string BuildDisplayText(string name, int type, int? num0, string? seals, int potCount)
+        private static string BuildDisplayText(
+            string name,
+            int type,
+            int? num0,
+            string? seals,
+            int potCount,
+            bool isIdentify)
         {
             // 剣盾
             if (type == 0 || type == 1)
@@ -66,7 +73,7 @@ namespace AsukaTree
                 var sb = new StringBuilder();
                 sb.Append(name);
 
-                if (num0.HasValue)
+                if (isIdentify && num0.HasValue)
                 {
                     if (num0.Value > 0) sb.Append($"+{num0.Value}");
                     else if (num0.Value < 0) sb.Append(num0.Value.ToString());
@@ -203,6 +210,21 @@ namespace AsukaTree
                 count++;
 
             return count;
+        }
+
+        private static bool? TryGetBool(JsonElement obj, string propName)
+        {
+            if (obj.ValueKind != JsonValueKind.Object) return null;
+            if (!obj.TryGetProperty(propName, out var p)) return null;
+
+            if (p.ValueKind == JsonValueKind.True) return true;
+            if (p.ValueKind == JsonValueKind.False) return false;
+
+            if (p.ValueKind == JsonValueKind.String &&
+                bool.TryParse(p.GetString(), out var b))
+                return b;
+
+            return null;
         }
     }
 }

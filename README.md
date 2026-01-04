@@ -24,7 +24,7 @@ AsukaTools 側の設定(初回だけ)
 1. AsukaToolsを再起動する
 
 AsukaTree を使う
-1. [releases](https://github.com/dolores-jp/asuka-tree/releases0) から `AsukaTree_***.zip` をダウンロード
+1. [releases](https://github.com/dolores-jp/asuka-tree/releases0) の任意のバージョンの Assets から `AsukaTree_***.zip` をダウンロード
 1. ダウンロードした ZIP を解凍
 1. `AsukaTree.exe` を実行
 1. 右上の `開始` ボタンをクリックするとアイテムリストの同期が開始されます

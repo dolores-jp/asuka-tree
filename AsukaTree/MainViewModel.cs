@@ -183,5 +183,22 @@ namespace AsukaTree
                 OnPropertyChanged(nameof(ItemFontSize));
             }
         }
+
+        private bool _expandPots = true; // デフォルト：展開する
+        public bool ExpandPots
+        {
+            get => _expandPots;
+            set
+            {
+                if (_expandPots == value) return;
+                _expandPots = value;
+                OnPropertyChanged(nameof(ExpandPots));
+                OnPropertyChanged(nameof(ItemColumns));
+            }
+        }
+
+        // ExpandPots=true のとき2列、false のとき1列
+        public int ItemColumns => ExpandPots ? 2 : 1;
+
     }
 }

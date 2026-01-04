@@ -13,6 +13,10 @@ AsukaTree は、[AsukaTools](https://web.archive.org/web/20241015162142/http://www
 -  Windows 11（64bit)
 	- 多分 Windows 10 でも動くと思うけど未確認です
 
+:warning: AsukaTree は現在 **ベータ版** です。  
+基本的な機能は動作しますが、UI や挙動に未調整な部分や想定外のケースが残っている可能性があります。
+不具合や改善案などがあれば、Issue や Pull Request で教えてもらえると助かります。
+
 ## 利用方法
 
 AsukaTools 側の設定(初回だけ)

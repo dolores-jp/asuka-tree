@@ -33,8 +33,9 @@ namespace AsukaTree
             string name = TryGetString(item, "name") ?? "(no-name)";
             int? num0 = TryGetNum0(item);
             string? seals = TryGetSealConcat(item);
+            int potCount = (type == 10) ? TryGetPotCount(item) : 0;
 
-            string text = BuildDisplayText(name, type, num0, seals);
+            string text = BuildDisplayText(name, type, num0, seals, potCount);
 
             var node = new JsonTreeNode
             {
@@ -57,7 +58,7 @@ namespace AsukaTree
             return node;
         }
 
-        private static string BuildDisplayText(string name, int type, int? num0, string? seals)
+        private static string BuildDisplayText(string name, int type, int? num0, string? seals, int potCount)
         {
             // 剣盾
             if (type == 0 || type == 1)
@@ -124,7 +125,11 @@ namespace AsukaTree
             // 壺
             if (type == 10)
             {
-                if (num0.HasValue) return $"{name} [{num0.Value}]";
+                if (num0.HasValue)
+                {
+                    int remain = num0.Value - potCount; // 容量 - 中身数
+                    return $"{name} [{remain}]";
+                }
                 return name;
             }
 
@@ -186,6 +191,18 @@ namespace AsukaTree
             if (!obj.TryGetProperty(propName, out var p)) return null;
             if (p.ValueKind == JsonValueKind.Number && p.TryGetInt32(out var n)) return n;
             return null;
+        }
+        
+        private static int TryGetPotCount(JsonElement item)
+        {
+            if (!item.TryGetProperty("pot", out var potEl) || potEl.ValueKind != JsonValueKind.Array)
+                return 0;
+
+            int count = 0;
+            foreach (var _ in potEl.EnumerateArray())
+                count++;
+
+            return count;
         }
     }
 }

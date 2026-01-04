@@ -61,7 +61,7 @@ namespace AsukaTree
 
         public MainViewModel()
         {
-            _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             _timer.Tick += async (_, __) => await RefreshAsync();
 
             // デフォルトは背景なし（必要ならここで初期化）

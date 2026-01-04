@@ -29,6 +29,8 @@ AsukaTree を使う
 1. `AsukaTree.exe` を実行
 1. 右上の `開始` ボタンをクリックするとアイテムリストの同期が開始されます
 
+<img src="images/ss.png" alt="usage ss" width="256">
+
 ## 著作権・ライセンスについて
 
 - 本アプリケーションのコードは MIT License の下で公開されています

@@ -25,6 +25,7 @@ namespace AsukaTree
             ["type:11"] = "Assets/11.png",
             ["type:12"] = "Assets/12.png",
             ["type:14"] = "Assets/14.png",
+            ["type:4099"] = "Assets/4099.png",
         };
 
         private const string FallbackPath = "Assets/999.png";

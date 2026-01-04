@@ -15,7 +15,7 @@ namespace AsukaTree
             if (!doc.RootElement.TryGetProperty("items", out var itemsEl) ||
                 itemsEl.ValueKind != JsonValueKind.Array)
             {
-                throw new FormatException("JSONに items 配列が見つからない、または items が配列ではありません。");
+                return Array.Empty<JsonTreeNode>();
             }
 
             var list = new List<JsonTreeNode>();
